@@ -31,6 +31,7 @@ class simulation {
 		int getCycle() {return cycle;}
 		int getThreadsNum() {return threads_num;}
 		void wait(int tid, int wait_cycle) {
+			cout << "wait_t: " << tid << endl;
 			threads_pool.erase(tid);
 			int return_cycle = cycle + wait_cycle + 1;
 			wait_t.insert(make_tuple(tid, return_cycle));
