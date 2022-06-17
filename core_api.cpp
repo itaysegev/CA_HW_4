@@ -6,15 +6,16 @@
 #include <stdio.h>
 
 using namespace std;
-Instruction curr_inst;
+
 void CORE_BlockedMT() {
 }
 
 void CORE_FinegrainedMT() {
 	uint32_t line = 0;
+	Instruction curr_inst;
 	int threads = SIM_GetThreadsNum();
 	SIM_MemInstRead(line, &curr_inst, 1);
-	// cout << curr_inst->opcode << endl;
+	cout << curr_inst.opcode << endl;
 
 
 }
