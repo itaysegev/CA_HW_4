@@ -162,7 +162,6 @@ void CORE_FinegrainedMT() {
 		curr_tid = curr_sim.nextThread(curr_tid);
 	}
 	CYCLE = curr_sim.getCycle();
-
 	THREADS_REGS = curr_sim.thread_regs;
 	// tcontext i = THREADS_REGS[1];
 	// cout << i.reg[5] << endl;
@@ -182,9 +181,7 @@ double CORE_BlockedMT_CPI(){
 }
 
 double CORE_FinegrainedMT_CPI(){
-	cout << "cycle: " << CYCLE << endl;
-	cout << "inst: " << INST << endl;
-	return 0;
+	return CYCLE / INST;
 }
 
 void CORE_BlockedMT_CTX(tcontext* context, int threadid) {
@@ -192,6 +189,7 @@ void CORE_BlockedMT_CTX(tcontext* context, int threadid) {
 }
 
 void CORE_FinegrainedMT_CTX(tcontext* context, int threadid) {
+	cout << THREADS_REGS[1].reg[5] << endl;
 	tcontext con_by_id = THREADS_REGS[threadid];
 	*context = con_by_id;
 }
