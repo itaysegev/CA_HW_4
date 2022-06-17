@@ -11,6 +11,9 @@
 
 using namespace std;
 vector<tcontext> THREADS_REGS;
+int INST = 0;
+int CYCLE = 0;
+
 class simulation {
 	protected:
 		int cycle;
@@ -113,7 +116,6 @@ class fine_grained: public simulation {
 				}
 			}
 			return next_tid;
-			
 		}
 
 };
@@ -134,6 +136,7 @@ void CORE_FinegrainedMT() {
 	while(!curr_sim.simEnded()) {
 		cout << "curr_tid: "<< curr_tid << endl;
 		if(curr_tid != IDLE) {
+			INST++;
 			SIM_MemInstRead(curr_sim.getNextLine(curr_tid), &curr_inst, curr_tid);
 			if(curr_inst.opcode == CMD_HALT) {
 				curr_sim.threadEnded(curr_tid);
@@ -158,7 +161,9 @@ void CORE_FinegrainedMT() {
 		curr_sim.endCycle(curr_tid);
 		curr_tid = curr_sim.nextThread(curr_tid);
 	}
-	// THREADS_REGS = curr_sim.thread_regs;
+	CYCLE = curr_sim.getCycle();
+
+	THREADS_REGS = curr_sim.thread_regs;
 	// tcontext i = THREADS_REGS[1];
 	// cout << i.reg[5] << endl;
 	// vector<tcontext>::iterator itr;
@@ -177,13 +182,16 @@ double CORE_BlockedMT_CPI(){
 }
 
 double CORE_FinegrainedMT_CPI(){
+	cout << "cycle: " << CYCLE << endl;
+	cout << "inst: " << INST << endl;
 	return 0;
 }
 
 void CORE_BlockedMT_CTX(tcontext* context, int threadid) {
-	// tcontext con_by_id = THREADS_REGS[1];
-	// *context = con_by_id;
+	
 }
 
 void CORE_FinegrainedMT_CTX(tcontext* context, int threadid) {
+	tcontext con_by_id = THREADS_REGS[threadid];
+	*context = con_by_id;
 }
