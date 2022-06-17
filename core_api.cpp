@@ -31,7 +31,6 @@ class simulation {
 		int getCycle() {return cycle;}
 		int getThreadsNum() {return threads_num;}
 		void wait(int tid, int wait_cycle) {
-			cout << "wait_t: " << tid << endl;
 			threads_pool.erase(tid);
 			int return_cycle = cycle + wait_cycle + 1;
 			wait_t.insert(make_tuple(tid, return_cycle));
@@ -78,7 +77,6 @@ class simulation {
 			for(itr = wait_t.begin(); itr != wait_t.end(); itr++) {
 				if(cycle == get<1>(*itr)){
 					int return_t = get<0>(*itr);
-					cout << "return_t: " << return_t << endl;
 					threads_pool.insert(return_t);
 				}
 			}
@@ -95,7 +93,7 @@ class fine_grained: public simulation {
 	public:
 		fine_grained(int threads_num) : simulation(threads_num), inst_num(0) {}
 		int nextThread(int tid) {
-			cout << "num of 0: " << threads_pool.count(0) << endl;
+			
 			int next_tid = IDLE;
 			if(idle()){
 				return next_tid;
@@ -132,7 +130,6 @@ void CORE_FinegrainedMT() {
 		if(curr_tid != IDLE) {
 			SIM_MemInstRead(curr_sim.getNextLine(curr_tid), &curr_inst, curr_tid);
 			if(curr_inst.opcode == CMD_HALT) {
-				cout << "ended: " << curr_tid << endl;
 				curr_sim.threadEnded(curr_tid);
 			}
 			else {
