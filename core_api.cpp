@@ -117,26 +117,26 @@ void CORE_FinegrainedMT() {
 	Instruction curr_inst;
 	fine_grained curr_sim(threads_num);
 	while(!curr_sim.simEnded()) {
-		if(curr_tid != IDLE) {
-			SIM_MemInstRead(curr_sim.getNextLine(curr_tid), &curr_inst, curr_tid);
-			if(curr_inst.opcode == CMD_HALT) {
-				curr_sim.threadEnded(curr_tid);
-			}
-			if(curr_inst.opcode < CMD_LOAD && curr_inst.opcode > CMD_NOP) {
-				curr_sim.aritAct(curr_inst);
-			}
-			if(curr_inst.opcode >= CMD_LOAD){
-				curr_sim.memAct(curr_inst);
-				int wait_cycle;
-				if(curr_inst.opcode == CMD_LOAD) {
-					wait_cycle = SIM_GetLoadLat();
-				}
-				else{
-					wait_cycle = SIM_GetStoreLat();
-				}
-				curr_sim.wait(curr_tid, wait_cycle);
-			}
-		}
+		// if(curr_tid != IDLE) {
+		// 	SIM_MemInstRead(curr_sim.getNextLine(curr_tid), &curr_inst, curr_tid);
+		// 	if(curr_inst.opcode == CMD_HALT) {
+		// 		curr_sim.threadEnded(curr_tid);
+		// 	}
+		// 	if(curr_inst.opcode < CMD_LOAD && curr_inst.opcode > CMD_NOP) {
+		// 		curr_sim.aritAct(curr_inst);
+		// 	}
+		// 	if(curr_inst.opcode >= CMD_LOAD){
+		// 		curr_sim.memAct(curr_inst);
+		// 		int wait_cycle;
+		// 		if(curr_inst.opcode == CMD_LOAD) {
+		// 			wait_cycle = SIM_GetLoadLat();
+		// 		}
+		// 		else{
+		// 			wait_cycle = SIM_GetStoreLat();
+		// 		}
+		// 		curr_sim.wait(curr_tid, wait_cycle);
+		// 	}
+		// }
 		curr_sim.endCycle(curr_tid);
 		curr_tid = curr_sim.nextThread(curr_tid);
 	}
