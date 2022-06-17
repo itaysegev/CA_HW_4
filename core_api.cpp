@@ -161,7 +161,8 @@ void CORE_FinegrainedMT() {
 	vector<tcontext>::iterator itr;
 	for(itr = curr_sim.thread_regs.begin(); itr != curr_sim.thread_regs.end();  itr++) {
 		THREADS_REGS.push_back(*itr);
-		cout << "AAA" << endl;
+		cout << (*itr).reg[0] << endl;
+
 	}
 }
 
