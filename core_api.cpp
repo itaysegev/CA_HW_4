@@ -6,7 +6,7 @@
 #include <stdio.h>
 
 using namespace std;
-Instruction* curr_inst;
+Instruction curr_inst;
 void CORE_BlockedMT() {
 }
 
