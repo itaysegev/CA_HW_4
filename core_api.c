@@ -6,10 +6,15 @@
 #include <stdio.h>
 
 
+
 void CORE_BlockedMT() {
 }
 
 void CORE_FinegrainedMT() {
+	int threads = SIM_GetThreadsNum();
+	printf("num of threads: %d\n", threads);
+
+
 }
 
 double CORE_BlockedMT_CPI(){
