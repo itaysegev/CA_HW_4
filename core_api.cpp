@@ -68,9 +68,7 @@ class simulation {
 				SIM_MemDataWrite(regs.reg[inst.dst_index] + sec_op,regs.reg[inst.src1_index]);
 			}
 			if(inst.opcode == CMD_LOAD) {
-				cout << "B" << endl;
 				SIM_MemDataRead(regs.reg[inst.src1_index] + sec_op, &regs.reg[inst.dst_index]);
-				cout << "B2" << endl;
 			}
 		}
 		void endCycle(int tid) {
@@ -135,9 +133,7 @@ void CORE_FinegrainedMT() {
 				curr_sim.aritAct(curr_inst);
 			}
 			if(curr_inst.opcode >= CMD_LOAD){
-				cout << "A" << endl;
 				curr_sim.memAct(curr_inst);
-				cout << "C" << endl;
 				int wait_cycle;
 				if(curr_inst.opcode == CMD_LOAD) {
 					wait_cycle = SIM_GetLoadLat();
