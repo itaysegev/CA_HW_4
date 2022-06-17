@@ -20,7 +20,7 @@ class simulation {
 		set <tuple<int,int>> wait_t; // (thread_id, return_cycle)
 		vector<int> line_num;
 	public:
-		// vector<tcontext> THREADS_REGS;
+		vector<tcontext> thread_regs;
 		simulation(int threads_num) : threads_num(threads_num), cycle(0) {
 			tcontext init_regs;
 			for(int i = 0; i < REGS_COUNT; i++) {
@@ -29,7 +29,7 @@ class simulation {
 			for (int i = 0; i< threads_num; i++){
 				threads_pool.insert(i);
 				line_num.push_back(0);
-				THREADS_REGS.push_back(init_regs);
+				thread_regs.push_back(init_regs);
 			}
 		}
 		int getCycle() {return cycle;}
@@ -48,16 +48,16 @@ class simulation {
 		int getNextLine(int tid) {return line_num[tid];}
 		void aritAct(Instruction inst, int tid) {
 			if(inst.opcode == CMD_ADD) {
-				THREADS_REGS[tid].reg[inst.dst_index] = THREADS_REGS[tid].reg[inst.src1_index] + THREADS_REGS[tid].reg[inst.src2_index_imm];
+				thread_regs[tid].reg[inst.dst_index] = thread_regs[tid].reg[inst.src1_index] + thread_regs[tid].reg[inst.src2_index_imm];
 			}
 			if(inst.opcode == CMD_ADDI && inst.isSrc2Imm) {
-				THREADS_REGS[tid].reg[inst.dst_index] = THREADS_REGS[tid].reg[inst.src1_index] + inst.src2_index_imm;
+				thread_regs[tid].reg[inst.dst_index] = thread_regs[tid].reg[inst.src1_index] + inst.src2_index_imm;
 			}
 			if(inst.opcode == CMD_SUB) {
-				THREADS_REGS[tid].reg[inst.dst_index] = THREADS_REGS[tid].reg[inst.src1_index] - THREADS_REGS[tid].reg[inst.src2_index_imm];
+				thread_regs[tid].reg[inst.dst_index] = thread_regs[tid].reg[inst.src1_index] - thread_regs[tid].reg[inst.src2_index_imm];
 			}
 			if(inst.opcode == CMD_SUBI && inst.isSrc2Imm) {
-				THREADS_REGS[tid].reg[inst.dst_index] = THREADS_REGS[tid].reg[inst.src1_index] - inst.src2_index_imm;
+				thread_regs[tid].reg[inst.dst_index] = thread_regs[tid].reg[inst.src1_index] - inst.src2_index_imm;
 			}
 		}
 		void memAct(Instruction inst, int tid) {
@@ -66,13 +66,13 @@ class simulation {
 				sec_op = inst.src2_index_imm;
 			}
 			else {
-				sec_op = THREADS_REGS[tid].reg[inst.src2_index_imm];
+				sec_op = thread_regs[tid].reg[inst.src2_index_imm];
 			}
 			if(inst.opcode == CMD_STORE) {
-				SIM_MemDataWrite(THREADS_REGS[tid].reg[inst.dst_index] + sec_op,THREADS_REGS[tid].reg[inst.src1_index]);
+				SIM_MemDataWrite(thread_regs[tid].reg[inst.dst_index] + sec_op,thread_regs[tid].reg[inst.src1_index]);
 			}
 			if(inst.opcode == CMD_LOAD) {
-				SIM_MemDataRead(THREADS_REGS[tid].reg[inst.src1_index] + sec_op, &THREADS_REGS[tid].reg[inst.dst_index]);
+				SIM_MemDataRead(thread_regs[tid].reg[inst.src1_index] + sec_op, &thread_regs[tid].reg[inst.dst_index]);
 			}
 		}
 		void endCycle(int tid) {
@@ -158,18 +158,18 @@ void CORE_FinegrainedMT() {
 		curr_sim.endCycle(curr_tid);
 		curr_tid = curr_sim.nextThread(curr_tid);
 	}
-	// // THREADS_REGS = curr_sim.THREADS_REGS;
-	// // tcontext i = THREADS_REGS[1];
-	// // cout << i.reg[5] << endl;
+	// THREADS_REGS = curr_sim.thread_regs;
+	// tcontext i = THREADS_REGS[1];
+	// cout << i.reg[5] << endl;
 	// vector<tcontext>::iterator itr;
-	// for(itr = curr_sim.THREADS_REGS.begin(); itr != curr_sim.THREADS_REGS.end();  itr++) {
+	// for(itr = curr_sim.thread_regs.begin(); itr != curr_sim.thread_regs.end();  itr++) {
 
 	// 	THREADS_REGS.push_back(*itr);
 	// 	cout << THREADS_REGS.front() << endl;
-	// // tcontext con_by_id = THREADS_REGS[1];
+	// tcontext con_by_id = THREADS_REGS[1];
 
 
-	// // }
+	// }
 }
 
 double CORE_BlockedMT_CPI(){
@@ -181,8 +181,7 @@ double CORE_FinegrainedMT_CPI(){
 }
 
 void CORE_BlockedMT_CTX(tcontext* context, int threadid) {
-	cout << THREADS_REGS[1].reg[5] << endl;
-	// tcontext con_by_id = THREADS_REGS[threadid];
+	// tcontext con_by_id = THREADS_REGS[1];
 	// *context = con_by_id;
 }
 
