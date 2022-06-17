@@ -173,7 +173,7 @@ double CORE_FinegrainedMT_CPI(){
 }
 
 void CORE_BlockedMT_CTX(tcontext* context, int threadid) {
-	context[threadid] = THREADS_REGS[threadid];
+	// context[threadid] = THREADS_REGS[threadid];
 }
 
 void CORE_FinegrainedMT_CTX(tcontext* context, int threadid) {
