@@ -116,7 +116,7 @@ void CORE_FinegrainedMT() {
 	}
 	int curr_tid = 0;
 	Instruction curr_inst;
-	fine_grained curr_sim(threads_num);
+	// fine_grained curr_sim(threads_num);
 	// while(!curr_sim.simEnded()) {
 	// 	if(curr_tid != IDLE) {
 	// 		SIM_MemInstRead(curr_sim.getNextLine(curr_tid), &curr_inst, curr_tid);
