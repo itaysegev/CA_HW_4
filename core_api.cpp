@@ -11,7 +11,7 @@
 
 using namespace std;
 vector<tcontext> THREADS_REGS;
-int INST = 0;
+double INST = 0;
 int CYCLE = 0;
 
 class simulation {
@@ -163,17 +163,6 @@ void CORE_FinegrainedMT() {
 	}
 	CYCLE = curr_sim.getCycle();
 	THREADS_REGS = curr_sim.thread_regs;
-	// tcontext i = THREADS_REGS[1];
-	// cout << i.reg[5] << endl;
-	// vector<tcontext>::iterator itr;
-	// for(itr = curr_sim.thread_regs.begin(); itr != curr_sim.thread_regs.end();  itr++) {
-
-	// 	THREADS_REGS.push_back(*itr);
-	// 	cout << THREADS_REGS.front() << endl;
-	// tcontext con_by_id = THREADS_REGS[1];
-
-
-	// }
 }
 
 double CORE_BlockedMT_CPI(){
@@ -181,7 +170,10 @@ double CORE_BlockedMT_CPI(){
 }
 
 double CORE_FinegrainedMT_CPI(){
-	return CYCLE / INST;
+	double cpi = CYCLE / INST;
+	CYCLE = 0;
+	INST = 0; 
+	return cpi;
 }
 
 void CORE_BlockedMT_CTX(tcontext* context, int threadid) {
