@@ -135,19 +135,21 @@ void CORE_FinegrainedMT() {
 				cout << "ended: " << curr_tid << endl;
 				curr_sim.threadEnded(curr_tid);
 			}
-			if(curr_inst.opcode < CMD_LOAD && curr_inst.opcode > CMD_NOP) {
-				curr_sim.aritAct(curr_inst);
-			}
-			if(curr_inst.opcode >= CMD_LOAD){
-				curr_sim.memAct(curr_inst);
-				int wait_cycle;
-				if(curr_inst.opcode == CMD_LOAD) {
-					wait_cycle = SIM_GetLoadLat();
+			else {
+				if(curr_inst.opcode < CMD_LOAD && curr_inst.opcode > CMD_NOP) {
+					curr_sim.aritAct(curr_inst);
 				}
-				else{
-					wait_cycle = SIM_GetStoreLat();
-				}
-				curr_sim.wait(curr_tid, wait_cycle);
+				if(curr_inst.opcode >= CMD_LOAD){
+					curr_sim.memAct(curr_inst);
+					int wait_cycle;
+					if(curr_inst.opcode == CMD_LOAD) {
+						wait_cycle = SIM_GetLoadLat();
+					}
+					else{
+						wait_cycle = SIM_GetStoreLat();
+					}
+					curr_sim.wait(curr_tid, wait_cycle);
+				}	
 			}
 		}
 		curr_sim.endCycle(curr_tid);
