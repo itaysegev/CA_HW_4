@@ -78,6 +78,7 @@ class simulation {
 			for(itr = wait_t.begin(); itr != wait_t.end(); itr++) {
 				if(cycle == get<1>(*itr)){
 					int return_t = get<0>(*itr);
+					cout << "return_t: " << return_t << endl;
 					threads_pool.insert(return_t);
 				}
 			}
