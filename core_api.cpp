@@ -36,7 +36,11 @@ class simulation {
 			wait_t.insert(make_tuple(tid, return_cycle));
 		}
 		bool idle() {return threads_pool.empty();}
-		void threadEnded(int tid) {finished_t.insert(tid);}
+		void threadEnded(int tid) {
+			finished_t.insert(tid);
+			threads_pool.erase(tid);
+			cout << "B" << endl;
+		}
 		bool simEnded() {return finished_t.size() == threads_num;}
 		int getNextLine(int tid) {return line_num[tid];}
 		void aritAct(Instruction inst) {
@@ -117,26 +121,27 @@ void CORE_FinegrainedMT() {
 	Instruction curr_inst;
 	fine_grained curr_sim(threads_num);
 	while(!curr_sim.simEnded()) {
-		// if(curr_tid != IDLE) {
-		// 	SIM_MemInstRead(curr_sim.getNextLine(curr_tid), &curr_inst, curr_tid);
-		// 	if(curr_inst.opcode == CMD_HALT) {
-		// 		curr_sim.threadEnded(curr_tid);
-		// 	}
-		// 	if(curr_inst.opcode < CMD_LOAD && curr_inst.opcode > CMD_NOP) {
-		// 		curr_sim.aritAct(curr_inst);
-		// 	}
-		// 	if(curr_inst.opcode >= CMD_LOAD){
-		// 		curr_sim.memAct(curr_inst);
-		// 		int wait_cycle;
-		// 		if(curr_inst.opcode == CMD_LOAD) {
-		// 			wait_cycle = SIM_GetLoadLat();
-		// 		}
-		// 		else{
-		// 			wait_cycle = SIM_GetStoreLat();
-		// 		}
-		// 		curr_sim.wait(curr_tid, wait_cycle);
-		// 	}
-		// }
+		if(curr_tid != IDLE) {
+			SIM_MemInstRead(curr_sim.getNextLine(curr_tid), &curr_inst, curr_tid);
+			if(curr_inst.opcode == CMD_HALT) {
+				cout << "A" << endl;
+				curr_sim.threadEnded(curr_tid);
+			}
+			if(curr_inst.opcode < CMD_LOAD && curr_inst.opcode > CMD_NOP) {
+				curr_sim.aritAct(curr_inst);
+			}
+			if(curr_inst.opcode >= CMD_LOAD){
+				curr_sim.memAct(curr_inst);
+				int wait_cycle;
+				if(curr_inst.opcode == CMD_LOAD) {
+					wait_cycle = SIM_GetLoadLat();
+				}
+				else{
+					wait_cycle = SIM_GetStoreLat();
+				}
+				curr_sim.wait(curr_tid, wait_cycle);
+			}
+		}
 		curr_sim.endCycle(curr_tid);
 		curr_tid = curr_sim.nextThread(curr_tid);
 	}
