@@ -27,7 +27,6 @@ class simulation {
 				line_num.push_back(0);
 			}
 		}
-
 		int getCycle() {return cycle;}
 		int getThreadsNum() {return threads_num;}
 		void wait(int tid, int wait_cycle) {
@@ -113,6 +112,7 @@ class fine_grained: public simulation {
 		}
 
 };
+fine_grained curr_sim(SIM_GetThreadsNum());
 
 void CORE_BlockedMT() {
 }
@@ -124,7 +124,6 @@ void CORE_FinegrainedMT() {
 	}
 	int curr_tid = 0;
 	Instruction curr_inst;
-	fine_grained curr_sim(threads_num);
 	while(!curr_sim.simEnded()) {
 		cout << "curr_tid: "<< curr_tid << endl;
 		if(curr_tid != IDLE) {
@@ -152,7 +151,6 @@ void CORE_FinegrainedMT() {
 		curr_sim.endCycle(curr_tid);
 		curr_tid = curr_sim.nextThread(curr_tid);
 	}
-
 }
 
 double CORE_BlockedMT_CPI(){
