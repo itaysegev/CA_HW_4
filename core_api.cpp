@@ -94,9 +94,7 @@ class fine_grained: public simulation {
 	public:
 		fine_grained(int threads_num) : simulation(threads_num), inst_num(0) {}
 		int nextThread(int tid) {
-			cout << "AAAAA" << endl;
-			cout << threads_pool.count(0) << endl;
-			cout << "BBBB" << endl;
+			cout << "num of 0: " << threads_pool.count(0) << endl;
 			int next_tid = IDLE;
 			if(idle()){
 				return next_tid;
@@ -129,7 +127,7 @@ void CORE_FinegrainedMT() {
 	Instruction curr_inst;
 	fine_grained curr_sim(threads_num);
 	while(!curr_sim.simEnded()) {
-		cout << curr_tid << endl;
+		cout << "curr_tid: "<< curr_tid << endl;
 		if(curr_tid != IDLE) {
 			SIM_MemInstRead(curr_sim.getNextLine(curr_tid), &curr_inst, curr_tid);
 			if(curr_inst.opcode == CMD_HALT) {
