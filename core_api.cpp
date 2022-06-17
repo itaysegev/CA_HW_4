@@ -165,6 +165,8 @@ void CORE_FinegrainedMT() {
 	// for(itr = curr_sim.thread_regs.begin(); itr != curr_sim.thread_regs.end();  itr++) {
 	// 	THREADS_REGS.push_back(*itr);
 	// 	cout << THREADS_REGS.front() << endl;
+	tcontext con_by_id = THREADS_REGS[1];
+
 
 	// }
 }
@@ -178,7 +180,7 @@ double CORE_FinegrainedMT_CPI(){
 }
 
 void CORE_BlockedMT_CTX(tcontext* context, int threadid) {
-	tcontext con_by_id = THREADS_REGS[threadid];
+	// tcontext con_by_id = THREADS_REGS[threadid];
 	// *context = con_by_id;
 }
 
