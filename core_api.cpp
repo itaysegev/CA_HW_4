@@ -14,10 +14,8 @@ void CORE_FinegrainedMT() {
 	Instruction* curr_inst;
 	uint32_t line = 0;
 	int threads = SIM_GetThreadsNum();
-	for(int i = 0; i < threads; i++){
-		SIM_MemInstRead(line, curr_inst, i);
-		cout << curr_inst->opcode << endl;
-	}
+	SIM_MemInstRead(line, curr_inst, 0);
+	cout << curr_inst->opcode << endl;
 
 
 }
