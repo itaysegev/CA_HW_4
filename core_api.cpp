@@ -159,8 +159,8 @@ void CORE_FinegrainedMT() {
 		curr_tid = curr_sim.nextThread(curr_tid);
 	}
 	THREADS_REGS = curr_sim.thread_regs;
-	tcontext i = THREADS_REGS[1];
-	cout << i.reg[5] << endl;
+	// tcontext i = THREADS_REGS[1];
+	// cout << i.reg[5] << endl;
 	// vector<tcontext>::iterator itr;
 	// for(itr = curr_sim.thread_regs.begin(); itr != curr_sim.thread_regs.end();  itr++) {
 	// 	THREADS_REGS.push_back(*itr);
@@ -178,7 +178,7 @@ double CORE_FinegrainedMT_CPI(){
 }
 
 void CORE_BlockedMT_CTX(tcontext* context, int threadid) {
-	// cout << THREADS_REGS[0].reg[0] << endl;
+	cout << THREADS_REGS[1].reg[0] << endl;
 	// context[threadid] = THREADS_REGS[threadid];
 }
 
