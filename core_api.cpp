@@ -39,7 +39,6 @@ class simulation {
 		void threadEnded(int tid) {
 			finished_t.insert(tid);
 			threads_pool.erase(tid);
-			cout << "B" << endl;
 		}
 		bool simEnded() {return finished_t.size() == threads_num;}
 		int getNextLine(int tid) {return line_num[tid];}
@@ -121,10 +120,10 @@ void CORE_FinegrainedMT() {
 	Instruction curr_inst;
 	fine_grained curr_sim(threads_num);
 	while(!curr_sim.simEnded()) {
+		cout << curr_tid << endl;
 		if(curr_tid != IDLE) {
 			SIM_MemInstRead(curr_sim.getNextLine(curr_tid), &curr_inst, curr_tid);
 			if(curr_inst.opcode == CMD_HALT) {
-				cout << "A" << endl;
 				curr_sim.threadEnded(curr_tid);
 			}
 			if(curr_inst.opcode < CMD_LOAD && curr_inst.opcode > CMD_NOP) {
