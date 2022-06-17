@@ -12,8 +12,8 @@ void CORE_BlockedMT() {
 
 void CORE_FinegrainedMT() {
 	int threads = SIM_GetThreadsNum();
+	cout << "eeeeee" << endl;
 	cout << threads << endl;
-	cout << "end" << endl;
 
 
 }
