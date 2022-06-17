@@ -181,6 +181,7 @@ double CORE_FinegrainedMT_CPI(){
 }
 
 void CORE_BlockedMT_CTX(tcontext* context, int threadid) {
+	cout << THREADS_REGS[1].reg[5] << endl;
 	// tcontext con_by_id = THREADS_REGS[threadid];
 	// *context = con_by_id;
 }
