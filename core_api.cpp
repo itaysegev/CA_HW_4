@@ -57,9 +57,12 @@ class simulation {
 			}
 		}
 		void memAct(Instruction inst) {
-			int sec_op = regs.reg[inst.src2_index_imm];
+			int sec_op;
 			if(inst.isSrc2Imm) {
 				sec_op = inst.src2_index_imm;
+			}
+			else {
+				sec_op = regs.reg[inst.src2_index_imm];
 			}
 			if(inst.opcode == CMD_STORE) {
 				SIM_MemDataWrite(regs.reg[inst.dst_index] + sec_op,regs.reg[inst.src1_index]);
