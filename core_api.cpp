@@ -112,7 +112,7 @@ class fine_grained: public simulation {
 		}
 
 };
-fine_grained curr_sim(SIM_GetThreadsNum());
+// fine_grained curr_sim(SIM_GetThreadsNum());
 
 void CORE_BlockedMT() {
 }
@@ -123,6 +123,7 @@ void CORE_FinegrainedMT() {
 		return;
 	}
 	int curr_tid = 0;
+	fine_grained curr_sim(SIM_GetThreadsNum());
 	Instruction curr_inst;
 	while(!curr_sim.simEnded()) {
 		cout << "curr_tid: "<< curr_tid << endl;
