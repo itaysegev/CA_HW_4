@@ -107,6 +107,8 @@ class fine_grained: public simulation {
 					return i;
 				}
 			}
+			return next_tid;
+			
 		}
 
 };
