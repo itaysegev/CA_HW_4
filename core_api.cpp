@@ -21,11 +21,10 @@ class simulation {
 		vector<int> line_num;
 		tcontext regs;
 	public:
-		simulation(int threads_num) : threads_num(threads_num) {
-			cycle = 0;
+		simulation(int threads_num) : threads_num(threads_num), cycle(0) {
 			for (int i = 0; i< threads_num; i++){
 				threads_pool.insert(i);
-				line_num[i] = 0;
+				line_num.push_back(0);
 			}
 		}
 
