@@ -39,6 +39,7 @@ class simulation {
 		void threadEnded(int tid) {
 			finished_t.insert(tid);
 			threads_pool.erase(tid);
+			
 		}
 		bool simEnded() {return finished_t.size() == threads_num;}
 		int getNextLine(int tid) {return line_num[tid];}
@@ -93,6 +94,9 @@ class fine_grained: public simulation {
 	public:
 		fine_grained(int threads_num) : simulation(threads_num), inst_num(0) {}
 		int nextThread(int tid) {
+			cout << "AAAAA" << endl;
+			cout << threads_pool.count(0) << endl;
+			cout << "AAAA" << endl;
 			int next_tid = IDLE;
 			if(idle()){
 				return next_tid;
