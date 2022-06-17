@@ -11,7 +11,7 @@ void CORE_BlockedMT() {
 }
 
 void CORE_FinegrainedMT() {
-	uint32_t line = 0;
+	uint32_t line = 1;
 	Instruction curr_inst;
 	int threads = SIM_GetThreadsNum();
 	SIM_MemInstRead(line, &curr_inst, 1);
