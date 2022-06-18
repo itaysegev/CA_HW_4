@@ -138,7 +138,7 @@ void CORE_FinegrainedMT() {
 	while(!curr_sim.simEnded()) {
 		if(curr_tid != IDLE) {
 			INST++;
-			SIM_MemInstRead(curr_sim.getNextLine(curr_tid), &curr_inst, curr_tid);
+			SIM_MemInstRead(curr_sim.getNextLine(curr_tid), &curr_inst, curr_tid); //read next instruction by line and thread pid
 			if(curr_inst.opcode == CMD_HALT) {
 				curr_sim.threadEnded(curr_tid);
 			}
@@ -162,6 +162,7 @@ void CORE_FinegrainedMT() {
 		curr_sim.endCycle(curr_tid);
 		curr_tid = curr_sim.nextThread(curr_tid);
 	}
+	// after simulation ended update global verbals
 	CYCLE = curr_sim.getCycle();
 	THREADS_REGS = curr_sim.thread_regs;
 }
