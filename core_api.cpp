@@ -183,6 +183,6 @@ void CORE_BlockedMT_CTX(tcontext* context, int threadid) {
 void CORE_FinegrainedMT_CTX(tcontext* context, int threadid) {
 	// tcontext con_by_id = THREADS_REGS[threadid];
 	// *context = con_by_id;
-	context = &THREADS_REGS[threadid];
+	context[threadid] = THREADS_REGS[threadid];
 	cout << context->reg[5] << endl;
 }
