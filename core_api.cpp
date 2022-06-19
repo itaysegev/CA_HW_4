@@ -107,24 +107,30 @@ class simulation {
 };
 // fine-grained architecture data structure
 class fine_grained: public simulation {
+	int last_thread;
 	public:
-		fine_grained(int threads_num) : simulation(threads_num) {}
+		fine_grained(int threads_num) : simulation(threads_num), last_thread(IDLE) {}
 		int nextThread(int tid) override { // schedular policy by fine-grained definition 
-			int next_tid = IDLE;
+			int start_id = tid;
+			if(tid == IDLE) {
+				start_id = last_thread;
+			}
 			if(idle()){
-				return next_tid;
+				return IDLE;
 			}
-			for(int i = tid + 1; i < getThreadsNum(); i++) {
+			for(int i = last_thread + 1; i < getThreadsNum(); i++) {
 				if(threads_pool.count(i) > 0){
+					last_thread = i;
 					return i;
 				}
 			}
-			for(int i = 0; i < tid + 1; i++) {
+			for(int i = 0; i < last_thread + 1; i++) {
 				if(threads_pool.count(i) > 0){
+					last_thread = i;
 					return i;
 				}
 			}
-			return next_tid;
+			
 		}
 
 };
@@ -233,7 +239,6 @@ double CORE_BlockedMT_CPI(){
 	CYCLE = INIT_VAL;
 	INST = INIT_VAL;
 	return cpi;
-	return 0;
 }
 
 double CORE_FinegrainedMT_CPI(){
