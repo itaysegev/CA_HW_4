@@ -27,7 +27,7 @@ class simulation {
 		vector<int> line_num; // line number in code for each thread
 	public:
 		vector<tcontext> thread_regs; // regs context for each thread later copy to global 
-		simulation(int threads_num) : threads_num(threads_num), cycle(INIT_VAL) {
+		simulation(int threads_num) :cycle(INIT_VAL), threads_num(threads_num) {
 			tcontext init_regs;
 			// init all with zeros and all threads are ready to run
 			for(int i = 0; i < REGS_COUNT; i++) {
@@ -51,7 +51,7 @@ class simulation {
 			finished_t.insert(tid);
 			threads_pool.erase(tid);
 		}
-		bool simEnded() {return finished_t.size() == threads_num;} 
+		bool simEnded() {return (int)finished_t.size() == threads_num;} 
 		int getNextLine(int tid) {return line_num[tid];}
 		void aritAct(Instruction inst, int tid) { // all regs op by different opcode as define in sim_api.h
 			if(inst.opcode == CMD_ADD) {
@@ -86,23 +86,30 @@ class simulation {
 			cycle ++;
 			set <tuple<int,int>>::iterator itr;
 			// return to ready to run all threads that have finished waiting time
-			for(itr = wait_t.begin(); itr != wait_t.end(); itr++) {
-				if(cycle == get<1>(*itr)){
+			itr = wait_t.begin();
+			while (itr != wait_t.end()) {
+				if (cycle >= get<1>(*itr)) {
 					int return_t = get<0>(*itr);
 					threads_pool.insert(return_t);
+					tuple<int, int> to_remove = *itr;
+					itr++;
+					wait_t.erase(to_remove);
+					continue;
 				}
+				itr++;
 			}
 			if(tid != IDLE) {
 				line_num[tid]++;
 			}
 
 		}
+		virtual int nextThread(int tid) = 0;
 };
 // fine-grained architecture data structure
 class fine_grained: public simulation {
 	public:
 		fine_grained(int threads_num) : simulation(threads_num) {}
-		int nextThread(int tid) { // schedular policy by fine-grained definition 
+		int nextThread(int tid) override { // schedular policy by fine-grained definition 
 			int next_tid = IDLE;
 			if(idle()){
 				return next_tid;
@@ -122,43 +129,79 @@ class fine_grained: public simulation {
 
 };
 
-
-
-void CORE_BlockedMT() {
-}
-
-void CORE_FinegrainedMT() {
-	int threads_num = SIM_GetThreadsNum();
-	if (threads_num == 0){
-		return;
+// BlockedMT architecture data structure
+class Blocked_MT : public simulation {
+public:
+	int last_thread;
+	Blocked_MT(int threads_num) : simulation(threads_num), last_thread(0) {}
+	int nextThread(int tid) override { // schedular policy by fine-grained definition 
+		if (tid != IDLE) { last_thread = tid; }
+		bool switched = false;
+		int next = IDLE;
+		if (tid == IDLE)
+		{
+			tid = last_thread;
+		}
+		if (idle()) {
+			return next;
+		}
+		if (threads_pool.count(tid) > 0)
+		{
+			return tid;
+		}
+		for (int i = tid + 1; i < getThreadsNum(); i++) {
+			if (threads_pool.count(i) > 0) {
+				switched = true;
+				next = i;
+				break;
+				
+			}
+		}
+		if (switched == false) {
+			for (int i = 0; i < tid; i++) {
+				if (threads_pool.count(i) > 0) {
+				switched = true;
+				next = i;
+				break;
+				}
+			}
+		}
+		if (switched) {
+			cycle += SIM_GetSwitchCycles();
+		}
+		return next;
 	}
-	int curr_tid = INIT_VAL;
-	fine_grained curr_sim(SIM_GetThreadsNum());
+
+};
+
+void MT(simulation& curr_sim) {
 	Instruction curr_inst;
-	while(!curr_sim.simEnded()) {
-		if(curr_tid != IDLE) {
+	int curr_tid = INIT_VAL;
+	while (!curr_sim.simEnded()) {
+		if (curr_tid != IDLE) {
 			INST++;
 			SIM_MemInstRead(curr_sim.getNextLine(curr_tid), &curr_inst, curr_tid); //read next instruction by line and thread pid
-			if(curr_inst.opcode == CMD_HALT) {
+			if (curr_inst.opcode == CMD_HALT) {
 				curr_sim.threadEnded(curr_tid);
 			}
 			else {
-				if(curr_inst.opcode < CMD_LOAD && curr_inst.opcode > CMD_NOP) {
+				if (curr_inst.opcode < CMD_LOAD && curr_inst.opcode > CMD_NOP) {
 					curr_sim.aritAct(curr_inst, curr_tid);
 				}
-				if(curr_inst.opcode >= CMD_LOAD){
+				if (curr_inst.opcode >= CMD_LOAD) {
 					curr_sim.memAct(curr_inst, curr_tid);
 					int wait_cycle;
-					if(curr_inst.opcode == CMD_LOAD) {
+					if (curr_inst.opcode == CMD_LOAD) {
 						wait_cycle = SIM_GetLoadLat();
 					}
-					else{
+					else {
 						wait_cycle = SIM_GetStoreLat();
 					}
 					curr_sim.wait(curr_tid, wait_cycle);
-				}	
+				}
 			}
 		}
+
 		curr_sim.endCycle(curr_tid);
 		curr_tid = curr_sim.nextThread(curr_tid);
 	}
@@ -167,7 +210,29 @@ void CORE_FinegrainedMT() {
 	THREADS_REGS = curr_sim.thread_regs;
 }
 
+void CORE_BlockedMT() {
+	int threads_num = SIM_GetThreadsNum();
+	if (threads_num == 0) {
+		return;
+	}
+	Blocked_MT curr_sim(SIM_GetThreadsNum());
+	MT(curr_sim);
+}
+
+void CORE_FinegrainedMT() {
+	int threads_num = SIM_GetThreadsNum();
+	if (threads_num == 0) {
+		return;
+	}
+	fine_grained curr_sim(SIM_GetThreadsNum());
+	MT(curr_sim);
+}
+
 double CORE_BlockedMT_CPI(){
+	double cpi = CYCLE / INST;
+	CYCLE = INIT_VAL;
+	INST = INIT_VAL;
+	return cpi;
 	return 0;
 }
 
@@ -179,6 +244,7 @@ double CORE_FinegrainedMT_CPI(){
 }
 
 void CORE_BlockedMT_CTX(tcontext* context, int threadid) {
+	context[threadid] = THREADS_REGS[threadid];
 	
 }
 
