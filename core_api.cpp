@@ -111,20 +111,20 @@ class fine_grained: public simulation {
 	public:
 		fine_grained(int threads_num) : simulation(threads_num), last_thread(IDLE) {}
 		int nextThread(int tid) override { // schedular policy by fine-grained definition 
+			if(idle()){
+				return IDLE;
+			}
 			int start_id = tid;
 			if(tid == IDLE) {
 				start_id = last_thread;
 			}
-			if(idle()){
-				return IDLE;
-			}
-			for(int i = last_thread + 1; i < getThreadsNum(); i++) {
+			for(int i = start_id + 1; i < getThreadsNum(); i++) {
 				if(threads_pool.count(i) > 0){
 					last_thread = i;
 					return i;
 				}
 			}
-			for(int i = 0; i < last_thread + 1; i++) {
+			for(int i = 0; i < start_id + 1; i++) {
 				if(threads_pool.count(i) > 0){
 					last_thread = i;
 					return i;
