@@ -130,7 +130,7 @@ class fine_grained: public simulation {
 					return i;
 				}
 			}
-			
+			return IDLE;
 		}
 
 };
